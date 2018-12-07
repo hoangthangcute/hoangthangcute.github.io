@@ -4,10 +4,6 @@
  *
  * Renders a christmas scene - Merry (Early) Christmas
  *
-* Author: Flavia Cavalcanti - November 2015 
- *
- * Licensed under the MIT license.
- * http://www.opensource.org/licenses/mit-license.php
  * 
  */
 
