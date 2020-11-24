@@ -48,7 +48,9 @@ function playMusic() {
 }
 
 window.onload = function() {
-    playMusic();
+    if (audio) {
+        playMusic();
+    }
 };
 
 soundIcon = document.getElementById("sound");
