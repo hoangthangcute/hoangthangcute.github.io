@@ -43,11 +43,10 @@ var imageNames = [
 
 function playMusic() {
     audio.loop = true;
-    audio.muted = true;
     audio.play();
 }
 
-window.onload = function() {
+window.load = function() {
     if (audio) {
         playMusic();
     }
