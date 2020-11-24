@@ -46,6 +46,10 @@ function playMusic() {
     audio.play();
 }
 
+window.onload = function() {
+    playMusic();
+};
+
 soundIcon = document.getElementById("sound");
 function play_pauseAudio() {
     isPlaying = !isPlaying;
