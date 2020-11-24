@@ -46,11 +46,11 @@ function playMusic() {
     audio.play();
 }
 
-window.load = function() {
+document.addEventListener('readystatechange', event => { 
     if (audio) {
         playMusic();
     }
-};
+});
 
 soundIcon = document.getElementById("sound");
 function play_pauseAudio() {
