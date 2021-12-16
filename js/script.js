@@ -42,8 +42,8 @@ var imageNames = [
 ];
 
 function playMusic() {
-    var sample = document.getElementById("my_audio");
-    sample.play();
+    audio.loop = true;
+    audio.play();
 }
 
 window.addEventListener('load', (event) => {
