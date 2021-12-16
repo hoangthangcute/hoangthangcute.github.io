@@ -28,7 +28,7 @@ var inAndOutCamera = true; //camera will move around the tree in and out
 var help = false; //display help
 
 var path = "img/";
-// var audio = new Audio('../mp3/mxm.mp3');
+var audio = new Audio('../mp3/mxm.mp3');
 var isPlaying = true;
 var isDisplay = false;
 
@@ -42,16 +42,9 @@ var imageNames = [
 ];
 
 function playMusic() {
-    setTimeout(() => {
-        document.getElementById('my_audio').play();
-    }, 2000)
+    var sample = document.getElementById("my_audio");
+    sample.play();
 }
-
-// document.addEventListener('readystatechange', event => { 
-//     if (audio) {
-//         playMusic();
-//     }
-// });
 
 window.addEventListener('load', (event) => {
   playMusic();
