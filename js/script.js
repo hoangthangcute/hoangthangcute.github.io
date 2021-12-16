@@ -42,9 +42,7 @@ var imageNames = [
 ];
 
 function playMusic() {
-    const audio = new Audio('../mp3/mxm.mp3');
-    audio.loop = true;
-    audio.play();
+    $(".my_audio").trigger('load');
 }
 
 // document.addEventListener('readystatechange', event => { 
