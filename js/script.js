@@ -46,10 +46,14 @@ function playMusic() {
     audio.play();
 }
 
-document.addEventListener('readystatechange', event => { 
-    if (audio) {
-        playMusic();
-    }
+// document.addEventListener('readystatechange', event => { 
+//     if (audio) {
+//         playMusic();
+//     }
+// });
+
+window.addEventListener('load', (event) => {
+  playMusic();
 });
 
 soundIcon = document.getElementById("sound");
