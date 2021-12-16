@@ -42,7 +42,9 @@ var imageNames = [
 ];
 
 function playMusic() {
-    $(".my_audio").trigger('load');
+    setTimeout(() => {
+        document.getElementById('my_audio').play();
+    }, 2000)
 }
 
 // document.addEventListener('readystatechange', event => { 
