@@ -13,8 +13,7 @@
     </head>
     <body style="background-color:white">
         <canvas id="backgroundCanvas"></canvas>
-<!--         <iframe src="mp3/silence.mp3" allow="autoplay" id="audio" autoplay="true" style="display:none" muted="muted" id="bg-music"></iframe> -->
-        <img onclick="play_pauseAudio()" id="sound" src="img/volume-mute.png" alt="Toggle sound">
+        <img onclick="play_pauseAudio()" id="sound" src="img/volume-on.png" alt="Toggle sound" hidden>
         
         <div id="greeting">
             <b>
@@ -22,7 +21,14 @@
             <h1>MERRY CHRISTMAS!</h1>
             </b>
             <br>
+        </div>
 
+        <div id="gift-gate" role="button" tabindex="0" aria-label="Open gift">
+            <div class="gift-gate__content">
+                <p class="gift-gate__from">A gift from Thang</p>
+                <h1 class="gift-gate__title">Merry Christmas</h1>
+                <p class="gift-gate__hint">Tap to open</p>
+            </div>
         </div>
         
         <!-- add scripts -->
