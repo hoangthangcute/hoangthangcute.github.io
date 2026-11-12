@@ -28,8 +28,11 @@ var inAndOutCamera = true; //camera will move around the tree in and out
 var help = false; //display help
 
 var path = "img/";
-var audio = new Audio('../mp3/mxm.mp3');
-var isPlaying = true;
+var audio = new Audio('mp3/mxm.mp3');
+audio.loop = true;
+var isPlaying = false;
+var userMuted = false;
+var soundIcon = document.getElementById("sound");
 var isDisplay = false;
 
 var imageNames = [
@@ -41,26 +44,49 @@ var imageNames = [
     path + "wrappingPaper.jpg"
 ];
 
-function playMusic() {
-    audio.loop = true;
-    audio.play();
+function updateSoundIcon() {
+    if (!soundIcon) return;
+    soundIcon.src = isPlaying ? "img/volume-on.png" : "img/volume-mute.png";
 }
 
-window.addEventListener('load', (event) => {
-  playMusic();
-});
+function playMusic() {
+    return audio.play().then(function () {
+        isPlaying = true;
+        updateSoundIcon();
+    }).catch(function () {
+        // Browsers block autoplay until there is a user gesture
+        isPlaying = false;
+        updateSoundIcon();
+    });
+}
 
-soundIcon = document.getElementById("sound");
 function play_pauseAudio() {
-    isPlaying = !isPlaying;
-    if (isPlaying == false) {
-        soundIcon.src="img/volume-mute.png"
+    if (isPlaying) {
+        userMuted = true;
         audio.pause();
+        isPlaying = false;
+        updateSoundIcon();
     } else {
-        soundIcon.src="img/volume-on.png"
-        audio.play();
+        userMuted = false;
+        playMusic();
     }
 }
+
+function unlockAudioOnGesture() {
+    if (!isPlaying && !userMuted) {
+        playMusic();
+    }
+}
+
+window.addEventListener('load', function () {
+    soundIcon = document.getElementById("sound");
+    updateSoundIcon();
+    playMusic();
+});
+
+['click', 'touchstart', 'keydown'].forEach(function (evt) {
+    document.addEventListener(evt, unlockAudioOnGesture, { once: true });
+});
 
 // initialize and start animation
 init();
