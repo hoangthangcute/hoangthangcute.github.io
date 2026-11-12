@@ -31,8 +31,8 @@ var path = "img/";
 var audio = new Audio('mp3/mxm.mp3');
 audio.loop = true;
 var isPlaying = false;
-var userMuted = false;
 var soundIcon = document.getElementById("sound");
+var giftGate = document.getElementById("gift-gate");
 var isDisplay = false;
 
 var imageNames = [
@@ -54,7 +54,6 @@ function playMusic() {
         isPlaying = true;
         updateSoundIcon();
     }).catch(function () {
-        // Browsers block autoplay until there is a user gesture
         isPlaying = false;
         updateSoundIcon();
     });
@@ -62,30 +61,35 @@ function playMusic() {
 
 function play_pauseAudio() {
     if (isPlaying) {
-        userMuted = true;
         audio.pause();
         isPlaying = false;
         updateSoundIcon();
     } else {
-        userMuted = false;
         playMusic();
     }
 }
 
-function unlockAudioOnGesture() {
-    if (!isPlaying && !userMuted) {
-        playMusic();
-    }
-}
-
-window.addEventListener('load', function () {
-    soundIcon = document.getElementById("sound");
-    updateSoundIcon();
+function openGift() {
+    if (!giftGate || giftGate.classList.contains("is-open")) return;
+    giftGate.classList.add("is-open");
+    if (soundIcon) soundIcon.hidden = false;
     playMusic();
-});
+}
 
-['click', 'touchstart', 'keydown'].forEach(function (evt) {
-    document.addEventListener(evt, unlockAudioOnGesture, { once: true });
+if (giftGate) {
+    giftGate.addEventListener("click", openGift);
+    giftGate.addEventListener("keydown", function (event) {
+        if (event.key === "Enter" || event.key === " ") {
+            event.preventDefault();
+            openGift();
+        }
+    });
+}
+
+window.addEventListener("load", function () {
+    soundIcon = document.getElementById("sound");
+    giftGate = document.getElementById("gift-gate");
+    updateSoundIcon();
 });
 
 // initialize and start animation
