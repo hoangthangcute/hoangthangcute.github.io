@@ -69,11 +69,112 @@ function play_pauseAudio() {
     }
 }
 
+var confettiCanvas = document.getElementById("confetti-canvas");
+var confettiCtx = confettiCanvas ? confettiCanvas.getContext("2d") : null;
+var confettiPieces = [];
+var confettiAnimId = null;
+var confettiColors = ["#e63946", "#f4d35e", "#2a9d8f", "#f1faee", "#ff8fab", "#c9a227", "#90be6d"];
+
+function resizeConfettiCanvas() {
+    if (!confettiCanvas) return;
+    confettiCanvas.width = window.innerWidth;
+    confettiCanvas.height = window.innerHeight;
+}
+
+function spawnConfettiWave(count, originX, originY) {
+    for (var i = 0; i < count; i++) {
+        var angle = (Math.PI * 2 * i) / count + (Math.random() - 0.5) * 0.7;
+        var speed = 5 + Math.random() * 14;
+        confettiPieces.push({
+            x: originX + (Math.random() - 0.5) * 80,
+            y: originY + (Math.random() - 0.5) * 40,
+            vx: Math.cos(angle) * speed,
+            vy: Math.sin(angle) * speed - (5 + Math.random() * 8),
+            w: 5 + Math.random() * 10,
+            h: 7 + Math.random() * 14,
+            color: confettiColors[Math.floor(Math.random() * confettiColors.length)],
+            rotation: Math.random() * Math.PI * 2,
+            rotationSpeed: (Math.random() - 0.5) * 0.28,
+            gravity: 0.06 + Math.random() * 0.05,
+            drag: 0.992,
+            opacity: 1,
+            life: 1,
+            fade: 0.0012 + Math.random() * 0.0018
+        });
+    }
+}
+
+function createConfettiBurst() {
+    if (!confettiCtx) return;
+    resizeConfettiCanvas();
+    confettiPieces = [];
+
+    var centerX = window.innerWidth / 2;
+    var centerY = window.innerHeight * 0.4;
+    var baseCount = Math.min(280, Math.floor(window.innerWidth / 3) + 120);
+
+    spawnConfettiWave(baseCount, centerX, centerY);
+    spawnConfettiWave(Math.floor(baseCount * 0.55), centerX * 0.35, centerY * 0.9);
+    spawnConfettiWave(Math.floor(baseCount * 0.55), centerX * 1.65, centerY * 0.9);
+
+    setTimeout(function () {
+        spawnConfettiWave(Math.floor(baseCount * 0.7), centerX, centerY * 0.75);
+    }, 450);
+
+    setTimeout(function () {
+        spawnConfettiWave(Math.floor(baseCount * 0.5), centerX * 0.5, centerY);
+        spawnConfettiWave(Math.floor(baseCount * 0.5), centerX * 1.5, centerY);
+    }, 900);
+
+    setTimeout(function () {
+        spawnConfettiWave(Math.floor(baseCount * 0.45), centerX, window.innerHeight * 0.3);
+    }, 1400);
+
+    if (confettiAnimId) cancelAnimationFrame(confettiAnimId);
+    animateConfetti();
+}
+
+function animateConfetti() {
+    if (!confettiCtx || !confettiCanvas) return;
+    confettiCtx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
+
+    var alive = false;
+    for (var i = 0; i < confettiPieces.length; i++) {
+        var p = confettiPieces[i];
+        p.vx *= p.drag;
+        p.vy += p.gravity;
+        p.x += p.vx;
+        p.y += p.vy;
+        p.rotation += p.rotationSpeed;
+        p.life -= p.fade;
+        p.opacity = Math.max(0, p.life);
+
+        if (p.opacity <= 0 || p.y > confettiCanvas.height + 40) continue;
+        alive = true;
+
+        confettiCtx.save();
+        confettiCtx.translate(p.x, p.y);
+        confettiCtx.rotate(p.rotation);
+        confettiCtx.globalAlpha = p.opacity;
+        confettiCtx.fillStyle = p.color;
+        confettiCtx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
+        confettiCtx.restore();
+    }
+
+    if (alive) {
+        confettiAnimId = requestAnimationFrame(animateConfetti);
+    } else {
+        confettiCtx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
+        confettiAnimId = null;
+    }
+}
+
 function openGift() {
     if (!giftGate || giftGate.classList.contains("is-open")) return;
     giftGate.classList.add("is-open");
     if (soundIcon) soundIcon.hidden = false;
     playMusic();
+    createConfettiBurst();
 }
 
 if (giftGate) {
@@ -86,9 +187,14 @@ if (giftGate) {
     });
 }
 
+window.addEventListener("resize", resizeConfettiCanvas);
+
 window.addEventListener("load", function () {
     soundIcon = document.getElementById("sound");
     giftGate = document.getElementById("gift-gate");
+    confettiCanvas = document.getElementById("confetti-canvas");
+    confettiCtx = confettiCanvas ? confettiCanvas.getContext("2d") : null;
+    resizeConfettiCanvas();
     updateSoundIcon();
 });
 
